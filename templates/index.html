@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NexPlay TV Brasil</title>
+<meta name="description" content="NexPlay TV Brasil — conteúdo, planos, aplicativos e suporte.">
+<link rel="icon" href="{{ url_for('static', filename='assets/favicon.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<nav>
+ <div class="container nav">
+  <a class="logo" href="#inicio"><img src="{{ url_for('static', filename='assets/logo.png') }}" alt="NexPlay TV Brasil"></a>
+  <div class="links">
+   <a href="#conteudo">Conteúdo</a><a href="#planos">Planos</a><a href="#apps">Aplicativos</a><a href="#faq">Dúvidas</a>
+  </div>
+  <a class="navbtn" href="{{ trial_url }}">QUERO TESTAR</a>
+ </div>
+</nav>
+
+<main id="inicio">
+<section class="hero"><div class="container hero-grid">
+ <div>
+  <span class="pill">⚡ NEXPLAY TV BRASIL</span>
+  <h1>Seu entretenimento.<br><span>Do seu jeito.</span></h1>
+  <p>Conteúdo em um só lugar, planos flexíveis e compatibilidade com diferentes dispositivos. Escolha seu plano e fale com nossa equipe pelo WhatsApp.</p>
+  <div class="actions"><a class="btn primary" href="#planos">VER PLANOS</a><a class="btn secondary" href="{{ trial_url }}">📲 QUERO TESTAR</a></div>
+ </div>
+ <div class="hero-card"><h3>O que você encontra</h3><div class="mini-grid">
+  <div class="mini"><b>📡</b><span>Canais ao vivo</span></div>
+  <div class="mini"><b>🎬</b><span>Filmes</span></div>
+  <div class="mini"><b>📺</b><span>Séries</span></div>
+  <div class="mini"><b>🏆</b><span>Esportes e entretenimento</span></div>
+ </div></div>
+</div></section>
+
+<section id="conteudo"><div class="container">
+ <div class="head"><h2>Conteúdo para todos os momentos</h2><p>Uma apresentação simples para você encontrar rapidamente o que quer assistir.</p></div>
+ <div class="grid4">
+  <div class="card"><div class="icon">📡</div><h3>Canais ao vivo</h3><p>Programação ao vivo conforme a disponibilidade do serviço.</p></div>
+  <div class="card"><div class="icon">🎬</div><h3>Filmes</h3><p>Uma área dedicada para escolher seu próximo filme.</p></div>
+  <div class="card"><div class="icon">📺</div><h3>Séries</h3><p>Encontre suas séries e organize sua maratona.</p></div>
+  <div class="card"><div class="icon">🏆</div><h3>Esportes</h3><p>Conteúdo esportivo conforme a disponibilidade do serviço.</p></div>
+ </div>
+</div></section>
+
+<section><div class="container">
+ <div class="head"><h2>Como funciona?</h2><p>Três passos simples para começar.</p></div>
+ <div class="steps">
+  <div class="step"><b>01</b><h3>Escolha seu plano</h3><p>Veja as opções com e sem conteúdo adulto e escolha o período.</p></div>
+  <div class="step"><b>02</b><h3>Fale pelo WhatsApp</h3><p>Clique no plano e envie a mensagem pronta para nossa equipe.</p></div>
+  <div class="step"><b>03</b><h3>Configure seu aparelho</h3><p>Receba as orientações para usar um aplicativo compatível.</p></div>
+ </div>
+</div></section>
+
+<section id="planos"><div class="container">
+ <div class="head"><h2>Escolha seu plano</h2><p>Todos os planos desta página indicam 1 dispositivo simultâneo.</p></div>
+ <div class="plans">
+  <div class="group">
+   <div class="group-title"><h3>🖤 Sem conteúdo adulto</h3><span>1 DISPOSITIVO</span></div>
+   {% for plan in plans_without %}
+   <div class="plan"><div><strong>{{ plan.name }}</strong><small>{{ plan.duration }}{% if plan.tag %} · {{ plan.tag }}{% endif %}</small></div><b class="price">{{ plan.price }}</b><a class="buy" href="{{ plan.url }}">ASSINAR</a></div>
+   {% endfor %}
+  </div>
+  <div class="group adult">
+   <div class="group-title"><h3>🔞 Com conteúdo adulto</h3><span>1 DISPOSITIVO</span></div>
+   {% for plan in plans_adult %}
+   <div class="plan"><div><strong>{{ plan.name }}</strong><small>{{ plan.duration }}{% if plan.tag %} · {{ plan.tag }}{% endif %}</small></div><b class="price">{{ plan.price }}</b><a class="buy" href="{{ plan.url }}">ASSINAR</a></div>
+   {% endfor %}
+  </div>
+ </div>
+</div></section>
+
+<section id="apps"><div class="container">
+ <div class="head"><h2>Aplicativos e dispositivos</h2><p>Veja onde você pode usar o serviço. O aplicativo indicado pode variar conforme o aparelho.</p></div>
+ <div class="grid4">
+  <div class="card"><div class="icon">📺</div><h3>Smart TV</h3><p>Samsung, LG e outros modelos compatíveis.</p></div>
+  <div class="card"><div class="icon">📦</div><h3>TV Box</h3><p>Android TV e Google TV compatíveis.</p></div>
+  <div class="card"><div class="icon">📱</div><h3>Celular e tablet</h3><p>Opções para Android e iPhone/iPad.</p></div>
+  <div class="card"><div class="icon">💻</div><h3>Computador</h3><p>Opções de reprodução compatíveis com seu sistema.</p></div>
+ </div>
+ <p class="note">Fale com a equipe para saber qual aplicativo usar no seu dispositivo.</p>
+</div></section>
+
+<section><div class="container">
+ <div class="head"><h2>Compatível com sua rotina</h2><p>Escolha a tela que for mais conveniente para você.</p></div>
+ <div class="devices">
+  <span>Samsung TV</span><span>LG TV</span><span>Android TV</span><span>Google TV</span><span>TV Box</span><span>Celular</span><span>Tablet</span><span>Computador</span>
+ </div>
+</div></section>
+
+<section><div class="container"><div class="cta">
+ <h2>Quer experimentar?</h2><p>Fale com a NexPlay TV pelo WhatsApp e peça informações sobre teste, planos ou configuração.</p>
+ <a class="btn primary" href="{{ trial_url }}">📲 FALAR COM A NEXPLAY</a>
+</div></div></section>
+
+<section id="faq"><div class="container">
+ <div class="head"><h2>Dúvidas frequentes</h2></div>
+ <div class="faq">
+  <details><summary>Em quais aparelhos posso usar?</summary><p>Smart TVs compatíveis, Android TV/Google TV, TV Box, celulares, tablets e computadores, conforme a compatibilidade do aplicativo.</p></details>
+  <details><summary>Quantos dispositivos posso usar ao mesmo tempo?</summary><p>Os planos mostrados nesta página possuem 1 dispositivo simultâneo.</p></details>
+  <details><summary>Preciso instalar um aplicativo?</summary><p>O acesso é utilizado por meio de um aplicativo/player compatível com o seu aparelho. A equipe informa a opção adequada.</p></details>
+  <details><summary>Como faço para assinar?</summary><p>Clique em ASSINAR no plano escolhido ou fale diretamente com a NexPlay pelo WhatsApp.</p></details>
+ </div>
+</div></section>
+</main>
+<footer><div class="container foot"><span>© 2026 NexPlay TV Brasil</span><span>WhatsApp: (13) 98881-7584</span></div></footer>
+</body>
+</html>
