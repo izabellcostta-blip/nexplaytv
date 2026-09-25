@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify
+import re
 import os
 import time
 from datetime import datetime, timedelta, timezone
@@ -143,8 +144,29 @@ def get_catalog():
 
 @app.route("/")
 def home():
-    return render_template("index.html", plans=BR_PLANS, multi=BR_MULTI,
+    html = render_template("index.html", plans=BR_PLANS, multi=BR_MULTI,
                            whatsapp="https://wa.me/" + BR_WHATSAPP)
+
+    # Mantém o mesmo index.html/visual do projeto, mas remove o catálogo
+    # dinâmico de filmes e séries e coloca apenas a informação institucional.
+    content_section = """
+    <section class="section catalog" id="catalogo">
+      <div class="section-head">
+        <span class="eyebrow">NEXPLAY</span>
+        <h2>Mais de 20 mil conteúdos</h2>
+        <p>Mais de 20 mil conteúdos entre canais ao vivo, 4K, HD, séries, filmes e conteúdos infantis.</p>
+      </div>
+    </section>
+    """
+    html = re.sub(r'\s*<section class="section catalog" id="catalogo">.*?</section>\s*',
+                  "\n" + content_section + "\n", html, count=1, flags=re.S)
+
+    # Melhora somente o FAQ sobre compatibilidade.
+    html = html.replace(
+        '<summary data-pt="O atendimento é em português?" data-en="Is support available in Portuguese?">O atendimento é em português?</summary><p data-pt="Sim. Nosso suporte é realizado em português pelo WhatsApp." data-en="Yes. Support is available in Portuguese through WhatsApp.">Sim. Nosso suporte é realizado em português pelo WhatsApp.</p>',
+        '<summary data-pt="É compatível com quais dispositivos?" data-en="Which devices is it compatible with?">É compatível com quais dispositivos?</summary><p data-pt="É compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Consulte nossa equipe para confirmar o seu dispositivo." data-en="It is compatible with various devices, such as Smart TVs, smartphones, tablets, computers and other compatible devices. Contact our team to confirm your device.">É compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Consulte nossa equipe para confirmar o seu dispositivo.</p>'
+    )
+    return html
 
 
 @app.route("/api/catalog")
