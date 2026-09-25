@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NexPlay TV Brasil | Entretenimento</title>
+<meta name="description" content="NexPlay TV Brasil — mais de 20 mil conteúdos e compatibilidade com diversos dispositivos.">
+<link rel="icon" href="{{ url_for('static',filename='favicon.png') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
+</head>
+<body>
+<header class="nav">
+ <div class="wrap nav-in">
+  <a href="#inicio" class="brand"><img src="{{ url_for('static',filename='logo.png') }}" alt="NexPlay TV Brasil"></a>
+  <nav><a href="#conteudo">Conteúdo</a><a href="#dispositivos">Dispositivos</a><a href="#planos">Planos</a><a href="#faq">FAQ</a></nav>
+  <a class="nav-btn" href="{{ trial_url }}">TESTAR GRÁTIS</a>
+ </div>
+</header>
+
+<main id="inicio">
+<section class="hero">
+ <div class="hero-bg"></div>
+ <div class="wrap hero-in">
+  <div class="hero-copy">
+   <div class="tag">NEXPLAY TV BRASIL</div>
+   <h1>Seu entretenimento.<br><span>Do seu jeito.</span></h1>
+   <p class="hero-lead"><b>+20.000 conteúdos</b> entre filmes, séries, canais e esportes para você encontrar tudo em um só lugar.</p>
+   <div class="actions"><a class="btn blue" href="{{ trial_url }}">TESTAR GRÁTIS</a><a class="btn ghost" href="#planos">VER PLANOS</a></div>
+   <div class="micro"><span>✓ Fácil de usar</span><span>✓ Vários dispositivos</span><span>✓ Suporte via WhatsApp</span></div>
+  </div>
+  <div class="hero-art">
+   <div class="art-glow"></div>
+   <div class="tv-frame">
+    <div class="tv-top"><i></i><i></i><i></i></div>
+    <div class="tv-screen">
+      <div class="screen-copy"><small>NEXPLAY</small><strong>FILMES<br><em>•</em> SÉRIES <em>•</em> AO VIVO</strong><span>Uma experiência de entretenimento em uma só tela.</span></div>
+      <div class="fake-posters"><b>FILMES</b><b>SÉRIES</b><b>SPORTS</b></div>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="numbers">
+ <div class="wrap number-grid">
+  <div><strong>+20 MIL</strong><span>CONTEÚDOS</span></div>
+  <div><strong>FILMES</strong><span>E SÉRIES</span></div>
+  <div><strong>CANAIS</strong><span>AO VIVO</span></div>
+  <div><strong>ESPORTES</strong><span>E INFANTIL</span></div>
+ </div>
+</section>
+
+<section id="conteudo" class="section">
+ <div class="wrap">
+  <div class="section-title"><small>CONTEÚDO</small><h2>Um universo de entretenimento</h2><p>Uma apresentação simples para você encontrar o que procura.</p></div>
+  <div class="content-show">
+   <article class="big-card movie"><div class="card-shade"></div><div class="card-text"><small>CATÁLOGO</small><h3>Filmes</h3><p>Grandes histórias para assistir quando quiser.</p></div></article>
+   <article class="big-card series"><div class="card-shade"></div><div class="card-text"><small>EPISÓDIOS</small><h3>Séries</h3><p>Temporadas e episódios em uma experiência organizada.</p></div></article>
+   <article class="big-card channels"><div class="card-shade"></div><div class="card-text"><small>AO VIVO</small><h3>Canais</h3><p>Programação ao vivo conforme a disponibilidade.</p></div></article>
+   <article class="big-card sports"><div class="card-shade"></div><div class="card-text"><small>EMOÇÃO</small><h3>Esportes</h3><p>Conteúdo esportivo conforme a disponibilidade.</p></div></article>
+   <article class="big-card kids"><div class="card-shade"></div><div class="card-text"><small>FAMÍLIA</small><h3>Infantil</h3><p>Opções para os pequenos se divertirem.</p></div></article>
+  </div>
+ </div>
+</section>
+
+<section id="dispositivos" class="section devices">
+ <div class="wrap">
+  <div class="section-title"><small>COMPATIBILIDADE</small><h2>Assista no seu dispositivo</h2><p>Confira algumas das plataformas e dispositivos compatíveis, conforme o aplicativo disponível para cada aparelho.</p></div>
+  <div class="device-grid">
+   <div class="device"><img src="{{ url_for('static',filename='samsung.svg') }}"><b>Samsung Smart TV</b><span>Smart TV</span></div>
+   <div class="device"><img src="{{ url_for('static',filename='lg.svg') }}"><b>LG Smart TV</b><span>Smart TV</span></div>
+   <div class="device"><img src="{{ url_for('static',filename='android.svg') }}"><b>Android TV</b><span>TV / Box</span></div>
+   <div class="device"><img src="{{ url_for('static',filename='google-tv.svg') }}"><b>Google TV</b><span>TV / Streaming</span></div>
+   <div class="device"><img src="{{ url_for('static',filename='tvbox.svg') }}"><b>TV Box</b><span>Android Box</span></div>
+   <div class="device"><img src="{{ url_for('static',filename='apple.svg') }}"><b>iPhone / iPad</b><span>Apple</span></div>
+   <div class="device"><img src="{{ url_for('static',filename='windows.svg') }}"><b>Computador</b><span>Windows</span></div>
+   <div class="device device-simple"><div class="phone-icon">▯</div><b>Celular</b><span>Dispositivo móvel</span></div>
+  </div>
+  <div class="legal-note">As marcas e nomes de produtos são usados apenas para identificar plataformas/dispositivos. A NexPlay TV Brasil não afirma parceria, patrocínio ou endosso por essas empresas.</div>
+ </div>
+</section>
+
+<section class="section highlight">
+ <div class="wrap highlight-in">
+  <div><small>UMA EXPERIÊNCIA MAIS SIMPLES</small><h2>Escolha, conecte e aproveite.</h2><p>Sem excesso de páginas. Tudo o que você precisa para conhecer a NexPlay está aqui.</p></div>
+  <div class="highlight-points"><span><b>01</b> Escolha seu plano</span><span><b>02</b> Fale pelo WhatsApp</span><span><b>03</b> Receba as orientações</span></div>
+ </div>
+</section>
+
+<section id="planos" class="section plans">
+ <div class="wrap">
+  <div class="section-title"><small>PLANOS</small><h2>Escolha seu plano</h2><p>Compare Padrão e Multi-Server sem repetir os mesmos planos em vários cards.</p></div>
+  <div class="plan-tabs"><button class="active" onclick="showPlans('noadult',this)">SEM CONTEÚDO ADULTO</button><button onclick="showPlans('adult',this)">COM CONTEÚDO ADULTO</button></div>
+  <div id="noadult" class="plan-panel active">
+   <div class="plan-caption"><div><b>PADRÃO</b><span>Modalidade padrão</span></div><div><b>MULTI-SERVER</b><span>Modalidade multi-server</span></div></div>
+   {% for p in standard %}
+   <div class="price-row {% if p.period=='Anual' %}annual{% endif %}">
+    <div class="period"><b>{{p.period}}</b><span>{{p.name}}</span>{% if p.period=='Anual' %}<em>MELHOR OFERTA</em>{% endif %}</div>
+    <div class="price">{{p.price}</div><div class="price multi">{{p.multi if p.multi else '—'}}</div><a href="{{p.url}}" class="buy">ASSINAR</a>
+   </div>
+   {% endfor %}
+  </div>
+  <div id="adult" class="plan-panel">
+   <div class="plan-caption"><div><b>PADRÃO</b><span>Modalidade padrão</span></div><div><b>MULTI-SERVER</b><span>Modalidade multi-server</span></div></div>
+   {% for p in adult %}
+   <div class="price-row {% if p.period=='Anual' %}annual{% endif %}">
+    <div class="period"><b>{{p.period}}</b><span>{{p.name}}</span>{% if p.period=='Anual' %}<em>MELHOR OFERTA</em>{% endif %}</div>
+    <div class="price">{{p.price}}</div><div class="price multi">{{p.multi if p.multi else '—'}}</div><a href="{{p.url}}" class="buy">ASSINAR</a>
+   </div>
+   {% endfor %}
+  </div>
+ </div>
+</section>
+
+<section class="section cta-section">
+ <div class="wrap cta"><div><small>COMECE AGORA</small><h2>Quer experimentar?</h2><p>Fale com a NexPlay TV Brasil e solicite seu teste.</p></div><a class="btn blue" href="{{trial_url}}">SOLICITAR TESTE</a></div>
+</section>
+
+<section id="faq" class="section faq">
+ <div class="wrap"><div class="section-title"><small>FAQ</small><h2>Perguntas frequentes</h2></div>
+  <details><summary>Em quais dispositivos posso assistir?</summary><p>Em dispositivos e plataformas compatíveis com o aplicativo disponível para o aparelho, como Smart TVs, Android TV, Google TV, TV Box, celulares e computadores.</p></details>
+  <details><summary>Qual a diferença entre Padrão e Multi-Server?</summary><p>São modalidades diferentes de acesso. Ao escolher seu plano, nossa equipe informa as condições correspondentes à modalidade selecionada.</p></details>
+  <details><summary>Como faço para contratar?</summary><p>Escolha o período desejado e clique em ASSINAR. Você será direcionado ao WhatsApp da NexPlay TV Brasil.</p></details>
+  <details><summary>Como faço o teste?</summary><p>Clique em qualquer botão de TESTAR GRÁTIS ou SOLICITAR TESTE para falar com nossa equipe.</p></details>
+ </div>
+</section>
+</main>
+
+<footer><div class="wrap foot"><img src="{{ url_for('static',filename='logo.png') }}" alt=""><span>© 2026 NexPlay TV Brasil</span><a href="{{trial_url}}">WhatsApp · (13) 98881-7584</a></div></footer>
+
+<script>
+function showPlans(id,btn){
+ document.querySelectorAll('.plan-panel').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.plan-tabs button').forEach(x=>x.classList.remove('active'));
+ document.getElementById(id).classList.add('active'); btn.classList.add('active');
+}
+</script>
+</body></html>
