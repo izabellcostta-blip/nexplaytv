@@ -199,7 +199,20 @@ def home():
     }.items():
         html = html.replace(old, new)
 
-    html = html.replace("</body>", floating_script + "\n</body>")
+    # Remove somente o check (✓) que aparece sozinho na linha de informações do hero.
+    # Nenhum outro conteúdo do site é alterado.
+    remove_orphan_check_script = r"""
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll("body *").forEach(function (el) {
+        if (el.children.length === 0 && (el.textContent || "").trim() === "✓") {
+          el.remove();
+        }
+      });
+    });
+    </script>
+    """
+    html = html.replace("</body>", floating_script + "\n" + remove_orphan_check_script + "\n</body>")
 
 
     # FAQ exclusivo da versão Brasil.
