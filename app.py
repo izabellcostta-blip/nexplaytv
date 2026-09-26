@@ -201,6 +201,59 @@ def home():
 
     html = html.replace("</body>", floating_script + "\n</body>")
 
+
+    # FAQ exclusivo da versão Brasil.
+    # Não há pergunta sobre idioma/atendimento em português.
+    faq_replacements = {
+        "É compatível com quais dispositivos?":
+            "Quais são os dispositivos compatíveis?",
+        "Em quais dispositivos posso usar?":
+            "Quais são os dispositivos compatíveis?",
+        "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Fale conosco para confirmar a compatibilidade do seu aparelho.":
+            "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis.",
+        "É compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Consulte nossa equipe para confirmar o seu dispositivo.":
+            "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis.",
+        "O atendimento é em português?":
+            "Quantos conteúdos vocês têm?",
+        "Sim. Nosso suporte é realizado em português pelo WhatsApp.":
+            "Temos mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis.",
+        "O atendimento é realizado em português?":
+            "Quantos conteúdos vocês têm?",
+        "Nosso suporte é realizado em português pelo WhatsApp.":
+            "Temos mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis.",
+        "Quais formas de pagamento são aceitas?":
+            "Preciso de cartão de crédito para ativar?",
+        "Aceitamos Pix e cartão. Fale com nossa equipe pelo WhatsApp para receber as instruções de pagamento.":
+            "Não. Você não precisa de cartão de crédito para ativar. As opções de pagamento disponíveis são informadas no momento da contratação.",
+    }
+
+    for old, new in faq_replacements.items():
+        html = html.replace(old, new)
+
+    # Se o template original ainda tiver a pergunta de português com atributos
+    # data-pt/data-en, substitui a linha inteira por uma pergunta BR.
+    html = re.sub(
+        r'<summary[^>]*>O atendimento é em português\?</summary>\s*<p[^>]*>.*?</p>',
+        '<summary data-pt="Quantos conteúdos vocês têm?" data-en="How many contents are available?">Quantos conteúdos vocês têm?</summary><p data-pt="Temos mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis." data-en="We have more than 20,000 contents, including live channels, 4K and HD content, series, movies and children’s content.">Temos mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis.</p>',
+        html,
+        flags=re.S,
+    )
+
+    # Substitui também variações da pergunta antiga, se existirem.
+    html = re.sub(
+        r'<summary[^>]*>É compatível com quais dispositivos\?</summary>\s*<p[^>]*>.*?</p>',
+        '<summary data-pt="Quais são os dispositivos compatíveis?" data-en="Which devices are compatible?">Quais são os dispositivos compatíveis?</summary><p data-pt="A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis." data-en="NexPlay is compatible with various devices, such as Smart TVs, smartphones, tablets, computers and other compatible devices.">A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis.</p>',
+        html,
+        flags=re.S,
+    )
+
+    html = re.sub(
+        r'<summary[^>]*>Quais formas de pagamento são aceitas\?</summary>\s*<p[^>]*>.*?</p>',
+        '<summary data-pt="Preciso de cartão de crédito para ativar?" data-en="Do I need a credit card to activate?">Preciso de cartão de crédito para ativar?</summary><p data-pt="Não. Você não precisa de cartão de crédito para ativar. As opções de pagamento disponíveis são informadas no momento da contratação." data-en="No. You do not need a credit card to activate. Available payment options are provided at the time of purchase.">Não. Você não precisa de cartão de crédito para ativar. As opções de pagamento disponíveis são informadas no momento da contratação.</p>',
+        html,
+        flags=re.S,
+    )
+
     return html
 
 
