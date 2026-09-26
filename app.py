@@ -33,11 +33,11 @@ def home():
     # Alterações feitas somente pelo app.py.
     # index.html, CSS, JavaScript e logo permanecem intactos.
     replacements = {
-        "NEXPLAY TV USA": "NEXPLAY TV BRASIL",
-        "NexPlay TV USA": "NexPlay TV Brasil",
-        "NEXPLAY USA": "NEXPLAY TV BRASIL",
-        "NexPlay USA": "NexPlay TV Brasil",
-        "ENTERTAINMENT YOUR WAY": "ENTRETENIMENTO DO SEU JEITO",
+        "NEXPLAY TV BRASIL": "NEXPLAY TV BRASIL",
+        "NexPlay TV Brasil": "NexPlay TV Brasil",
+        "NEXPLAY TV BRASIL": "NEXPLAY TV BRASIL",
+        "NexPlay TV Brasil": "NexPlay TV Brasil",
+        "SEU ENTRETENIMENTO": "ENTRETENIMENTO DO SEU JEITO",
         "Valores em dólares.": "Valores em reais.",
         "Values in dollars.": "Valores em reais.",
         "Séries em exibição nos EUA": "Séries e filmes",
@@ -190,10 +190,10 @@ def home():
 
     # Evita que referências residuais ao USA apareçam no botão/área de contato.
     for old, new in {
-        "NexPlay TV USA": "NexPlay TV Brasil",
-        "NEXPLAY TV USA": "NEXPLAY TV BRASIL",
-        "NexPlay USA": "NexPlay TV Brasil",
-        "NEXPLAY USA": "NEXPLAY TV BRASIL",
+        "NexPlay TV Brasil": "NexPlay TV Brasil",
+        "NEXPLAY TV BRASIL": "NEXPLAY TV BRASIL",
+        "NexPlay TV Brasil": "NexPlay TV Brasil",
+        "NEXPLAY TV BRASIL": "NEXPLAY TV BRASIL",
         "Atendimento nos EUA": "Atendimento no Brasil",
         "nos EUA": "no Brasil",
     }.items():
@@ -203,7 +203,7 @@ def home():
 
 
     # FAQ exclusivo da versão Brasil.
-    # Não há pergunta sobre idioma/atendimento em português.
+    # Não há pergunta sobre idioma/atendimento no Brasil.
     faq_replacements = {
         "É compatível com quais dispositivos?":
             "Quais são os dispositivos compatíveis?",
@@ -255,35 +255,35 @@ def home():
     )
 
 
-    # FAQ BR — seis perguntas comerciais e objetivas.
+
+    # FAQ BR — conteúdo, dispositivos e teste grátis.
     faq_questions = [
         (
-            "Quais opções de planos estão disponíveis?",
-            "Temos planos de 15 dias, mensal, trimestral, semestral e anual, com opções sem conteúdo adulto e com conteúdo adulto. Também temos opções Multi-Server em planos selecionados."
+            "Quais conteúdos estão disponíveis?",
+            "Você encontra canais ao vivo, filmes, séries, conteúdos em 4K e HD, opções infantis e muito mais, com uma programação pensada para diferentes momentos e perfis."
         ),
         (
             "Quantos conteúdos estão disponíveis?",
-            "São mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis, para você encontrar opções para diferentes momentos."
+            "São mais de 20 mil conteúdos, incluindo canais ao vivo, 4K, HD, séries, filmes e conteúdos infantis."
         ),
         (
             "Quais dispositivos são compatíveis?",
-            "A NexPlay pode ser utilizada em diversos dispositivos compatíveis, como Smart TVs, celulares, tablets e computadores. A compatibilidade pode variar de acordo com o aparelho e o aplicativo utilizado."
+            "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets e computadores. A compatibilidade pode variar conforme o aparelho e o aplicativo utilizado."
         ),
         (
             "Preciso de cartão de crédito para ativar o teste grátis?",
-            "Não. Não é necessário cartão de crédito para ativar o seu teste grátis. Fale conosco pelo WhatsApp para verificar a disponibilidade e receber as orientações."
+            "Não. Não é necessário cartão de crédito para ativar o seu teste grátis. Você pode solicitar o teste pelo WhatsApp e receber as orientações para começar."
         ),
         (
             "Como funciona o teste grátis?",
-            "Você pode solicitar o teste grátis pelo WhatsApp. Nossa equipe orienta você sobre a disponibilidade e os passos para começar a conhecer a experiência NexPlay."
+            "Você pode solicitar um teste grátis de 6 ou 12 horas, conforme disponibilidade. Assim, você conhece a experiência NexPlay antes de escolher um plano."
         ),
         (
-            "O que está incluído nos planos?",
-            "Os planos dão acesso ao catálogo e aos recursos correspondentes à opção escolhida. Você pode escolher entre diferentes períodos e entre as opções com ou sem conteúdo adulto, conforme a disponibilidade."
+            "O que está incluso nos planos?",
+            "Os planos incluem acesso aos conteúdos disponíveis na opção escolhida, com canais ao vivo, filmes, séries, conteúdos infantis e opções em diferentes qualidades, como 4K e HD, conforme a disponibilidade de cada conteúdo."
         ),
     ]
 
-    # Reconstrói somente a área de FAQ dentro do HTML gerado pelo app.py.
     faq_html = '<div class="faq-list" id="faq-br">'
     for question, answer in faq_questions:
         faq_html += (
@@ -294,8 +294,6 @@ def home():
         )
     faq_html += '</div>'
 
-    # Substitui a lista existente de perguntas dentro da seção FAQ,
-    # preservando o restante do site exatamente como está.
     html = re.sub(
         r'<div class="faq-list".*?</div>',
         faq_html,
@@ -303,6 +301,98 @@ def home():
         count=1,
         flags=re.S,
     )
+
+
+    # Hero BR: substitui a arte genérica da tela por uma foto de família assistindo TV.
+    # A imagem é carregada diretamente no navegador, portanto não exige outro arquivo.
+    family_photo = "https://images.pexels.com/photos/5813746/pexels-photo-5813746.jpeg?auto=compress&cs=tinysrgb&w=1400"
+
+    hero_visual_script = """
+    <style>
+      .nexplay-family-hero {
+        position: absolute;
+        inset: 7% 4% 7% 4%;
+        overflow: hidden;
+        border-radius: 24px;
+        border: 1px solid rgba(55,153,255,.55);
+        box-shadow: 0 0 45px rgba(32,137,255,.20), 0 22px 55px rgba(0,0,0,.35);
+        background: #07101e;
+        transform: rotate(1.5deg);
+      }
+      .nexplay-family-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+      }
+      .nexplay-family-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(2,12,28,.05), rgba(0,25,65,.18));
+        pointer-events: none;
+      }
+      @media (max-width: 700px) {
+        .nexplay-family-hero {
+          inset: 5% 3%;
+          border-radius: 18px;
+        }
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var photoUrl = "%s";
+
+        // Localiza a tela/arte atual do hero sem alterar o restante da página.
+        var candidates = document.querySelectorAll(
+          ".hero-visual, .hero-art, .hero-screen, .screen, .device, .visual-card, .hero-media"
+        );
+
+        var target = null;
+        for (var i = 0; i < candidates.length; i++) {
+          var el = candidates[i];
+          var rect = el.getBoundingClientRect();
+          if (rect.width > 250 && rect.height > 140) {
+            target = el;
+            break;
+          }
+        }
+
+        // Fallback: procura o bloco que contém o texto da arte antiga.
+        if (!target) {
+          var all = document.querySelectorAll("div, section, article");
+          for (var j = 0; j < all.length; j++) {
+            var t = (all[j].textContent || "").trim();
+            if (t.indexOf("ENTERTAINMENT") !== -1 || t.indexOf("YOUR WAY") !== -1) {
+              var r = all[j].getBoundingClientRect();
+              if (r.width > 250 && r.height > 140) {
+                target = all[j];
+                break;
+              }
+            }
+          }
+        }
+
+        if (!target) return;
+
+        target.style.position = "relative";
+        target.style.overflow = "hidden";
+
+        var oldContent = target.querySelectorAll("*");
+        for (var k = 0; k < oldContent.length; k++) {
+          oldContent[k].style.visibility = "hidden";
+        }
+
+        var photo = document.createElement("div");
+        photo.className = "nexplay-family-hero";
+        photo.innerHTML = '<img src="' + photoUrl + '" alt="Família assistindo televisão em casa">';
+        target.appendChild(photo);
+      });
+    </script>
+    """ % family_photo
+
+    html = html.replace("</body>", hero_visual_script + "\n</body>")
 
     return html
 
