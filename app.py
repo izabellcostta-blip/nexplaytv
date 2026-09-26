@@ -303,19 +303,21 @@ def home():
     )
 
 
-    # Hero BR: substitui a arte genérica da tela por uma foto de família assistindo TV.
-    # A imagem é carregada diretamente no navegador, portanto não exige outro arquivo.
-    family_photo = "https://images.pexels.com/photos/5813746/pexels-photo-5813746.jpeg?auto=compress&cs=tinysrgb&w=1400"
 
-    hero_visual_script = """
+    # HERO BR — família vista de costas assistindo TV.
+    # Foto gratuita do Pexels; a própria página do Pexels marca a imagem como
+    # "Free to use". A composição mostra as pessoas de costas e a TV ao fundo.
+    family_photo = "https://images.pexels.com/photos/6557551/pexels-photo-6557551.jpeg?cs=srgb&dl=pexels-cottonbro-6557551.jpg&fm=jpg"
+
+    br_ui_script = """
     <style>
       .nexplay-family-hero {
         position: absolute;
         inset: 7% 4% 7% 4%;
         overflow: hidden;
         border-radius: 24px;
-        border: 1px solid rgba(55,153,255,.55);
-        box-shadow: 0 0 45px rgba(32,137,255,.20), 0 22px 55px rgba(0,0,0,.35);
+        border: 1px solid rgba(55,153,255,.60);
+        box-shadow: 0 0 45px rgba(32,137,255,.22), 0 22px 55px rgba(0,0,0,.36);
         background: #07101e;
         transform: rotate(1.5deg);
       }
@@ -330,26 +332,85 @@ def home():
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, rgba(2,12,28,.05), rgba(0,25,65,.18));
+        background: linear-gradient(135deg, rgba(2,12,28,.03), rgba(0,25,65,.20));
         pointer-events: none;
+      }
+      .nexplay-remote {
+        position: absolute;
+        right: 25%;
+        bottom: 25%;
+        width: 13px;
+        height: 34px;
+        border-radius: 7px;
+        background: linear-gradient(#202b3a,#080d15);
+        border: 1px solid rgba(255,255,255,.45);
+        box-shadow: 0 3px 10px rgba(0,0,0,.45);
+        transform: rotate(18deg);
+        z-index: 3;
+        opacity: .92;
+      }
+      .nexplay-remote::before {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 6px;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #39a0ff;
+        box-shadow: 0 8px 0 #8b98a8, 0 16px 0 #8b98a8;
       }
       @media (max-width: 700px) {
         .nexplay-family-hero {
           inset: 5% 3%;
           border-radius: 18px;
         }
+        .nexplay-remote {
+          right: 24%;
+          bottom: 24%;
+        }
+      }
+
+      /* FAQ BR — cartões sempre visíveis abaixo do título Perguntas Frequentes. */
+      .nexplay-br-faq-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 26px;
+      }
+      .nexplay-br-faq-card {
+        background: linear-gradient(145deg, rgba(15,20,35,.96), rgba(7,10,20,.98));
+        border: 1px solid rgba(45,140,255,.24);
+        border-radius: 18px;
+        padding: 22px 24px;
+        box-shadow: 0 14px 35px rgba(0,0,0,.20);
+      }
+      .nexplay-br-faq-card h3 {
+        margin: 0 0 10px;
+        font-size: 17px;
+        line-height: 1.35;
+      }
+      .nexplay-br-faq-card p {
+        margin: 0;
+        line-height: 1.65;
+        opacity: .82;
+      }
+      @media (max-width: 760px) {
+        .nexplay-br-faq-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        /* ---------- HERO: foto de costas ---------- */
         var photoUrl = "__FAMILY_PHOTO_URL__";
-
-        // Localiza a tela/arte atual do hero sem alterar o restante da página.
         var candidates = document.querySelectorAll(
           ".hero-visual, .hero-art, .hero-screen, .screen, .device, .visual-card, .hero-media"
         );
-
         var target = null;
+
         for (var i = 0; i < candidates.length; i++) {
           var el = candidates[i];
           var rect = el.getBoundingClientRect();
@@ -359,12 +420,13 @@ def home():
           }
         }
 
-        // Fallback: procura o bloco que contém o texto da arte antiga.
         if (!target) {
           var all = document.querySelectorAll("div, section, article");
           for (var j = 0; j < all.length; j++) {
             var t = (all[j].textContent || "").trim();
-            if (t.indexOf("ENTERTAINMENT") !== -1 || t.indexOf("YOUR WAY") !== -1) {
+            if (t.indexOf("ENTERTAINMENT") !== -1 ||
+                t.indexOf("YOUR WAY") !== -1 ||
+                t.indexOf("USA") !== -1) {
               var r = all[j].getBoundingClientRect();
               if (r.width > 250 && r.height > 140) {
                 target = all[j];
@@ -374,26 +436,87 @@ def home():
           }
         }
 
-        if (!target) return;
+        if (target) {
+          target.style.position = "relative";
+          target.style.overflow = "hidden";
 
-        target.style.position = "relative";
-        target.style.overflow = "hidden";
+          var oldContent = target.querySelectorAll("*");
+          for (var k = 0; k < oldContent.length; k++) {
+            oldContent[k].style.visibility = "hidden";
+          }
 
-        var oldContent = target.querySelectorAll("*");
-        for (var k = 0; k < oldContent.length; k++) {
-          oldContent[k].style.visibility = "hidden";
+          var photo = document.createElement("div");
+          photo.className = "nexplay-family-hero";
+          photo.innerHTML =
+            '<img src="' + photoUrl + '" alt="Família assistindo televisão de costas">' +
+            '<span class="nexplay-remote" aria-hidden="true"></span>';
+          target.appendChild(photo);
         }
 
-        var photo = document.createElement("div");
-        photo.className = "nexplay-family-hero";
-        photo.innerHTML = '<img src="' + photoUrl + '" alt="Família assistindo televisão em casa">';
-        target.appendChild(photo);
+        /* ---------- FAQ: substitui a área existente ---------- */
+        var faq = [
+          ["Quais conteúdos estão disponíveis?",
+           "Você encontra canais ao vivo, filmes, séries, conteúdos em 4K e HD, opções infantis e muito mais, com uma programação pensada para diferentes momentos e perfis."],
+
+          ["Quantos conteúdos estão disponíveis?",
+           "São mais de 20 mil conteúdos, incluindo canais ao vivo, 4K, HD, séries, filmes e conteúdos infantis."],
+
+          ["Quais dispositivos são compatíveis?",
+           "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets e computadores. A compatibilidade pode variar conforme o aparelho e o aplicativo utilizado."],
+
+          ["Preciso de cartão de crédito para ativar o teste grátis?",
+           "Não. Não é necessário cartão de crédito para ativar o seu teste grátis. Você pode solicitar o teste pelo WhatsApp e receber as orientações para começar."],
+
+          ["Como funciona o teste grátis?",
+           "Você pode solicitar um teste grátis de 6 ou 12 horas, conforme disponibilidade. Assim, você conhece a experiência NexPlay antes de escolher um plano."],
+
+          ["O que está incluso nos planos?",
+           "Os planos incluem acesso aos conteúdos disponíveis na opção escolhida, com canais ao vivo, filmes, séries, conteúdos infantis e opções em diferentes qualidades, como 4K e HD, conforme a disponibilidade de cada conteúdo."]
+        ];
+
+        var headings = document.querySelectorAll("h1,h2,h3,h4,p,span,div");
+        var faqSection = null;
+
+        for (var h = 0; h < headings.length; h++) {
+          var txt = (headings[h].textContent || "").trim();
+          if (txt === "Perguntas Frequentes" || txt === "Perguntas frequentes") {
+            faqSection = headings[h].closest("section");
+            if (!faqSection) faqSection = headings[h].parentElement;
+            break;
+          }
+        }
+
+        if (faqSection) {
+          var grid = faqSection.querySelector(".faq-grid, .faq-list, [class*='faq-grid'], [class*='faq-list']");
+          if (!grid) {
+            grid = document.createElement("div");
+            faqSection.appendChild(grid);
+          }
+
+          grid.innerHTML = "";
+          grid.className = "nexplay-br-faq-grid";
+
+          for (var q = 0; q < faq.length; q++) {
+            var card = document.createElement("article");
+            card.className = "nexplay-br-faq-card";
+
+            var title = document.createElement("h3");
+            title.textContent = faq[q][0];
+
+            var answer = document.createElement("p");
+            answer.textContent = faq[q][1];
+
+            card.appendChild(title);
+            card.appendChild(answer);
+            grid.appendChild(card);
+          }
+        }
       });
     </script>
-    """  # URL is inserted below without "%" formatting.
+    """
 
-    hero_visual_script = hero_visual_script.replace("__FAMILY_PHOTO_URL__", family_photo)
-    html = html.replace("</body>", hero_visual_script + "\n</body>")
+    br_ui_script = br_ui_script.replace("__FAMILY_PHOTO_URL__", family_photo)
+    html = html.replace("</body>", br_ui_script + "\n</body>")
 
     return html
 
