@@ -342,7 +342,7 @@ def home():
     </style>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        var photoUrl = "%s";
+        var photoUrl = "__FAMILY_PHOTO_URL__";
 
         // Localiza a tela/arte atual do hero sem alterar o restante da página.
         var candidates = document.querySelectorAll(
@@ -390,8 +390,9 @@ def home():
         target.appendChild(photo);
       });
     </script>
-    """ % family_photo
+    """  # URL is inserted below without "%" formatting.
 
+    hero_visual_script = hero_visual_script.replace("__FAMILY_PHOTO_URL__", family_photo)
     html = html.replace("</body>", hero_visual_script + "\n</body>")
 
     return html
