@@ -254,6 +254,56 @@ def home():
         flags=re.S,
     )
 
+
+    # FAQ BR — seis perguntas comerciais e objetivas.
+    faq_questions = [
+        (
+            "Quais opções de planos estão disponíveis?",
+            "Temos planos de 15 dias, mensal, trimestral, semestral e anual, com opções sem conteúdo adulto e com conteúdo adulto. Também temos opções Multi-Server em planos selecionados."
+        ),
+        (
+            "Quantos conteúdos estão disponíveis?",
+            "São mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis, para você encontrar opções para diferentes momentos."
+        ),
+        (
+            "Quais dispositivos são compatíveis?",
+            "A NexPlay pode ser utilizada em diversos dispositivos compatíveis, como Smart TVs, celulares, tablets e computadores. A compatibilidade pode variar de acordo com o aparelho e o aplicativo utilizado."
+        ),
+        (
+            "Preciso de cartão de crédito para ativar o teste grátis?",
+            "Não. Não é necessário cartão de crédito para ativar o seu teste grátis. Fale conosco pelo WhatsApp para verificar a disponibilidade e receber as orientações."
+        ),
+        (
+            "Como funciona o teste grátis?",
+            "Você pode solicitar o teste grátis pelo WhatsApp. Nossa equipe orienta você sobre a disponibilidade e os passos para começar a conhecer a experiência NexPlay."
+        ),
+        (
+            "O que está incluído nos planos?",
+            "Os planos dão acesso ao catálogo e aos recursos correspondentes à opção escolhida. Você pode escolher entre diferentes períodos e entre as opções com ou sem conteúdo adulto, conforme a disponibilidade."
+        ),
+    ]
+
+    # Reconstrói somente a área de FAQ dentro do HTML gerado pelo app.py.
+    faq_html = '<div class="faq-list" id="faq-br">'
+    for question, answer in faq_questions:
+        faq_html += (
+            '<details class="faq-item">'
+            '<summary>' + question + '</summary>'
+            '<p>' + answer + '</p>'
+            '</details>'
+        )
+    faq_html += '</div>'
+
+    # Substitui a lista existente de perguntas dentro da seção FAQ,
+    # preservando o restante do site exatamente como está.
+    html = re.sub(
+        r'<div class="faq-list".*?</div>',
+        faq_html,
+        html,
+        count=1,
+        flags=re.S,
+    )
+
     return html
 
 
