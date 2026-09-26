@@ -335,39 +335,10 @@ def home():
         background: linear-gradient(135deg, rgba(2,12,28,.03), rgba(0,25,65,.20));
         pointer-events: none;
       }
-      .nexplay-remote {
-        position: absolute;
-        right: 25%;
-        bottom: 25%;
-        width: 13px;
-        height: 34px;
-        border-radius: 7px;
-        background: linear-gradient(#202b3a,#080d15);
-        border: 1px solid rgba(255,255,255,.45);
-        box-shadow: 0 3px 10px rgba(0,0,0,.45);
-        transform: rotate(18deg);
-        z-index: 3;
-        opacity: .92;
-      }
-      .nexplay-remote::before {
-        content: "";
-        position: absolute;
-        left: 4px;
-        top: 6px;
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: #39a0ff;
-        box-shadow: 0 8px 0 #8b98a8, 0 16px 0 #8b98a8;
-      }
       @media (max-width: 700px) {
         .nexplay-family-hero {
           inset: 5% 3%;
           border-radius: 18px;
-        }
-        .nexplay-remote {
-          right: 24%;
-          bottom: 24%;
         }
       }
 
@@ -448,8 +419,7 @@ def home():
           var photo = document.createElement("div");
           photo.className = "nexplay-family-hero";
           photo.innerHTML =
-            '<img src="' + photoUrl + '" alt="Família assistindo televisão de costas">' +
-            '<span class="nexplay-remote" aria-hidden="true"></span>';
+            '<img src="' + photoUrl + '" alt="Família assistindo televisão">';
           target.appendChild(photo);
         }
 
