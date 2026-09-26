@@ -307,7 +307,7 @@ def home():
     # HERO BR — família vista de costas assistindo TV.
     # Foto gratuita do Pexels; a própria página do Pexels marca a imagem como
     # "Free to use". A composição mostra as pessoas de costas e a TV ao fundo.
-    family_photo = "https://images.pexels.com/photos/6557551/pexels-photo-6557551.jpeg?cs=srgb&dl=pexels-cottonbro-6557551.jpg&fm=jpg"
+    family_photo = "https://images.pexels.com/photos/6557538/pexels-photo-6557538.jpeg?auto=compress&cs=tinysrgb&w=1400"
 
     br_ui_script = """
     <style>
@@ -517,6 +517,122 @@ def home():
 
     br_ui_script = br_ui_script.replace("__FAMILY_PHOTO_URL__", family_photo)
     html = html.replace("</body>", br_ui_script + "\n</body>")
+
+
+    # Correções finais do layout BR:
+    # - apenas 6 perguntas do FAQ;
+    # - remove perguntas antigas duplicadas;
+    # - remove "Contato" da navegação superior;
+    # - remove a frase de atendimento em português do hero.
+    final_br_cleanup = r"""
+    <style>
+      .nexplay-final-faq-grid {
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:16px;
+        margin-top:26px;
+      }
+      .nexplay-final-faq-card {
+        background:linear-gradient(145deg,rgba(15,20,35,.96),rgba(7,10,20,.98));
+        border:1px solid rgba(45,140,255,.24);
+        border-radius:18px;
+        padding:22px 24px;
+        box-shadow:0 14px 35px rgba(0,0,0,.20);
+      }
+      .nexplay-final-faq-card h3 {
+        margin:0 0 10px;
+        font-size:17px;
+        line-height:1.35;
+      }
+      .nexplay-final-faq-card p {
+        margin:0;
+        line-height:1.65;
+        opacity:.82;
+      }
+      @media(max-width:760px) {
+        .nexplay-final-faq-grid { grid-template-columns:1fr; }
+      }
+    </style>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      /* Remove o item Contato da navegação superior. */
+      document.querySelectorAll("nav a, header a").forEach(function (link) {
+        var label = (link.textContent || "").trim().toLowerCase();
+        if (label === "contato" || label === "contact") {
+          link.remove();
+        }
+      });
+
+      /* Remove a frase antiga de atendimento em português. */
+      document.querySelectorAll("body *").forEach(function (el) {
+        if (el.children.length === 0) {
+          var value = (el.textContent || "").trim();
+          if (value === "Atendimento em português" ||
+              value === "✓ Atendimento em português") {
+            el.remove();
+          }
+        }
+      });
+
+      var faqData = [
+        ["Quais conteúdos estão disponíveis?",
+         "Você encontra canais ao vivo, filmes, séries, conteúdos em 4K e HD, opções infantis e muito mais, com uma programação pensada para diferentes momentos e perfis."],
+        ["Quantos conteúdos estão disponíveis?",
+         "São mais de 20 mil conteúdos, incluindo canais ao vivo, 4K, HD, séries, filmes e conteúdos infantis."],
+        ["Quais dispositivos são compatíveis?",
+         "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets e computadores. A compatibilidade pode variar conforme o aparelho e o aplicativo utilizado."],
+        ["Preciso de cartão de crédito para ativar o teste grátis?",
+         "Não. Não é necessário cartão de crédito para ativar o seu teste grátis. Você pode solicitar o teste pelo WhatsApp e receber as orientações para começar."],
+        ["Como funciona o teste grátis?",
+         "Você pode solicitar um teste grátis de 6 ou 12 horas, conforme disponibilidade. Assim, você conhece a experiência NexPlay antes de escolher um plano."],
+        ["O que está incluso nos planos?",
+         "Os planos incluem acesso aos conteúdos disponíveis na opção escolhida, com canais ao vivo, filmes, séries, conteúdos infantis e opções em diferentes qualidades, como 4K e HD, conforme a disponibilidade de cada conteúdo."]
+      ];
+
+      /* Localiza a seção pelo título. */
+      var titleNodes = document.querySelectorAll("h1,h2,h3,h4");
+      var section = null;
+
+      for (var i = 0; i < titleNodes.length; i++) {
+        var title = (titleNodes[i].textContent || "").trim().toLowerCase();
+        if (title === "perguntas frequentes") {
+          section = titleNodes[i].closest("section") || titleNodes[i].parentElement;
+          break;
+        }
+      }
+
+      if (!section) return;
+
+      /* Apaga absolutamente todas as perguntas antigas dentro da seção. */
+      section.querySelectorAll("details, .faq-list, .faq-grid, .nexplay-br-faq-grid, .nexplay-final-faq-grid").forEach(function (node) {
+        node.remove();
+      });
+
+      /* Cria exatamente uma grade com as seis perguntas. */
+      var grid = document.createElement("div");
+      grid.className = "nexplay-final-faq-grid";
+
+      faqData.forEach(function (item) {
+        var card = document.createElement("article");
+        card.className = "nexplay-final-faq-card";
+
+        var question = document.createElement("h3");
+        question.textContent = item[0];
+
+        var answer = document.createElement("p");
+        answer.textContent = item[1];
+
+        card.appendChild(question);
+        card.appendChild(answer);
+        grid.appendChild(card);
+      });
+
+      section.appendChild(grid);
+    });
+    </script>
+    """
+
+    html = html.replace("</head>", final_br_cleanup + "</head>")
 
     return html
 
