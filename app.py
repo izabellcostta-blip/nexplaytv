@@ -3,7 +3,6 @@ import re
 import os
 import time
 from datetime import datetime, timedelta, timezone
-import requests
 
 app = Flask(__name__)
 
@@ -22,156 +21,108 @@ BR_MULTI = {
     "Anual": ("R$ 139,99", "R$ 169,99"),
 }
 
-CATALOG_CACHE = {"timestamp": 0, "data": None}
-CATALOG_TTL = 30 * 60  # refresh every 30 minutes
-
-
-def _wikidata_movies():
-    """Recent/upcoming films with poster artwork from Wikidata/Wikimedia Commons."""
-    today = datetime.now(timezone.utc).date()
-    start = today - timedelta(days=120)
-    end = today + timedelta(days=60)
-    query = f"""
-    SELECT ?item ?itemLabel ?date ?image WHERE {{
-      ?item wdt:P31/wdt:P279* wd:Q11424;
-            wdt:P577 ?date;
-            wdt:P18 ?image.
-      FILTER(?date >= "{start}T00:00:00Z"^^xsd:dateTime)
-      FILTER(?date <= "{end}T23:59:59Z"^^xsd:dateTime)
-      SERVICE wikibase:label {{ bd:serviceParam wikibase:language "en". }}
-    }}
-    ORDER BY DESC(?date)
-    LIMIT 24
-    """
-    r = requests.get(
-        "https://query.wikidata.org/sparql",
-        params={"query": query, "format": "json"},
-        headers={"User-Agent": "NexPlay-TV-BR/1.0 (catalog metadata)", "Accept": "application/sparql-results+json"},
-        timeout=18,
-    )
-    r.raise_for_status()
-    rows = r.json().get("results", {}).get("bindings", [])
-    out = []
-    seen = set()
-    for row in rows:
-        title = row.get("itemLabel", {}).get("value", "").strip()
-        image = row.get("image", {}).get("value", "").strip()
-        date = row.get("date", {}).get("value", "")[:10]
-        item = row.get("item", {}).get("value", "")
-        if not title or not image or title in seen:
-            continue
-        seen.add(title)
-        if image.startswith("http://"):
-            image = "https://" + image[7:]
-        out.append({
-            "title": title,
-            "year": date[:4] if date else "",
-            "date": date,
-            "image": image,
-            "type": "movie",
-            "source": "Wikidata / Wikimedia Commons",
-            "source_url": item,
-        })
-    return out[:12]
-
-
-def _tvmaze_series():
-    """Series airing in the US over the next few days, with TVmaze artwork."""
-    today = datetime.now(timezone.utc).date()
-    shows = {}
-    for offset in range(3):
-        date = today + timedelta(days=offset)
-        try:
-            r = requests.get(
-                "https://api.tvmaze.com/schedule",
-                params={"country": "US", "date": date.isoformat()},
-                headers={"User-Agent": "NexPlay-TV-BR/1.0"},
-                timeout=10,
-            )
-            r.raise_for_status()
-            for ep in r.json():
-                show = ep.get("show") or {}
-                sid = show.get("id")
-                if not sid or sid in shows:
-                    continue
-                image = show.get("image") or {}
-                poster = image.get("medium") or image.get("original")
-                if not poster:
-                    continue
-                shows[sid] = {
-                    "title": show.get("name", ""),
-                    "year": (show.get("premiered") or "")[:4],
-                    "date": ep.get("airdate", ""),
-                    "image": poster,
-                    "type": "series",
-                    "source": "TVmaze",
-                    "source_url": show.get("url", "https://www.tvmaze.com/"),
-                }
-        except requests.RequestException:
-            continue
-    return list(shows.values())[:12]
-
-
-def get_catalog():
-    now = time.time()
-    if CATALOG_CACHE["data"] is not None and now - CATALOG_CACHE["timestamp"] < CATALOG_TTL:
-        return CATALOG_CACHE["data"]
-
-    movies = []
-    series = []
-    try:
-        movies = _wikidata_movies()
-    except Exception:
-        movies = []
-    try:
-        series = _tvmaze_series()
-    except Exception:
-        series = []
-
-    data = {
-        "updated_at": datetime.now(timezone.utc).isoformat(),
-        "movies": movies,
-        "series": series,
-        "attribution": {
-            "wikidata": "https://www.wikidata.org/",
-            "commons": "https://commons.wikimedia.org/",
-            "tvmaze": "https://www.tvmaze.com/",
-        },
-    }
-    CATALOG_CACHE.update({"timestamp": now, "data": data})
-    return data
-
-
 @app.route("/")
 def home():
-    html = render_template("index.html", plans=BR_PLANS, multi=BR_MULTI,
-                           whatsapp="https://wa.me/" + BR_WHATSAPP)
+    html = render_template(
+        "index.html",
+        plans=BR_PLANS,
+        multi=BR_MULTI,
+        whatsapp="https://wa.me/" + BR_WHATSAPP,
+    )
 
-    # Mantém o mesmo index.html/visual do projeto, mas remove o catálogo
-    # dinâmico de filmes e séries e coloca apenas a informação institucional.
+    # Alterações feitas somente pelo app.py.
+    # index.html, CSS, JavaScript e logo permanecem intactos.
+    replacements = {
+        "NEXPLAY TV USA": "NEXPLAY TV BRASIL",
+        "NexPlay TV USA": "NexPlay TV Brasil",
+        "NEXPLAY USA": "NEXPLAY TV BRASIL",
+        "NexPlay USA": "NexPlay TV Brasil",
+        "ENTERTAINMENT YOUR WAY": "ENTRETENIMENTO DO SEU JEITO",
+        "Valores em dólares.": "Valores em reais.",
+        "Values in dollars.": "Valores em reais.",
+        "Séries em exibição nos EUA": "Séries e filmes",
+        "séries em exibição nos EUA": "séries e filmes",
+    }
+    for old, new in replacements.items():
+        html = html.replace(old, new)
+
     content_section = """
     <section class="section catalog" id="catalogo">
       <div class="section-head">
-        <span class="eyebrow">NEXPLAY</span>
-        <h2>Mais de 20 mil conteúdos</h2>
-        <p>Mais de 20 mil conteúdos entre canais ao vivo, 4K, HD, séries, filmes e conteúdos infantis.</p>
+        <span class="eyebrow">NEXPLAY TV BRASIL</span>
+        <h2>Mais de 20 mil conteúdos para você aproveitar</h2>
+        <p>Uma programação completa com canais ao vivo, conteúdos em 4K e HD, séries, filmes e opções infantis.</p>
+      </div>
+
+      <div class="feature-grid" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:28px;">
+        <article class="feature-card" style="background:linear-gradient(145deg,rgba(15,20,35,.96),rgba(7,10,20,.98));border:1px solid rgba(45,140,255,.22);border-radius:18px;padding:22px;box-shadow:0 14px 35px rgba(0,0,0,.22);">
+
+          <span class="feature-number">01</span>
+          <h3>Canais ao vivo</h3>
+          <p>Uma ampla variedade de canais para acompanhar sua programação favorita.</p>
+        </article>
+
+        <article class="feature-card" style="background:linear-gradient(145deg,rgba(15,20,35,.96),rgba(7,10,20,.98));border:1px solid rgba(45,140,255,.22);border-radius:18px;padding:22px;box-shadow:0 14px 35px rgba(0,0,0,.22);">
+          <span class="feature-number">02</span>
+          <h3>Filmes e séries</h3>
+          <p>Opções de entretenimento para diferentes estilos e momentos.</p>
+        </article>
+
+        <article class="feature-card" style="background:linear-gradient(145deg,rgba(15,20,35,.96),rgba(7,10,20,.98));border:1px solid rgba(45,140,255,.22);border-radius:18px;padding:22px;box-shadow:0 14px 35px rgba(0,0,0,.22);">
+          <span class="feature-number">03</span>
+          <h3>4K e HD</h3>
+          <p>Conteúdos disponíveis em diferentes qualidades, conforme a disponibilidade.</p>
+        </article>
+
+        <article class="feature-card" style="background:linear-gradient(145deg,rgba(15,20,35,.96),rgba(7,10,20,.98));border:1px solid rgba(45,140,255,.22);border-radius:18px;padding:22px;box-shadow:0 14px 35px rgba(0,0,0,.22);">
+          <span class="feature-number">04</span>
+          <h3>Conteúdo infantil</h3>
+          <p>Opções de entretenimento para os pequenos também fazem parte da experiência NexPlay.</p>
+        </article>
       </div>
     </section>
     """
-    html = re.sub(r'\s*<section class="section catalog" id="catalogo">.*?</section>\s*',
-                  "\n" + content_section + "\n", html, count=1, flags=re.S)
 
-    # Melhora somente o FAQ sobre compatibilidade.
-    html = html.replace(
-        '<summary data-pt="O atendimento é em português?" data-en="Is support available in Portuguese?">O atendimento é em português?</summary><p data-pt="Sim. Nosso suporte é realizado em português pelo WhatsApp." data-en="Yes. Support is available in Portuguese through WhatsApp.">Sim. Nosso suporte é realizado em português pelo WhatsApp.</p>',
-        '<summary data-pt="É compatível com quais dispositivos?" data-en="Which devices is it compatible with?">É compatível com quais dispositivos?</summary><p data-pt="É compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Consulte nossa equipe para confirmar o seu dispositivo." data-en="It is compatible with various devices, such as Smart TVs, smartphones, tablets, computers and other compatible devices. Contact our team to confirm your device.">É compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Consulte nossa equipe para confirmar o seu dispositivo.</p>'
+    html = re.sub(
+        r'\s*<section class="section catalog" id="catalogo">.*?</section>\s*',
+        "\n" + content_section + "\n",
+        html,
+        count=1,
+        flags=re.S,
     )
+
+    faq_replacements = {
+        "Clique em qualquer botão de teste e fale conosco pelo WhatsApp. A disponibilidade e duração do teste serão confirmadas no atendimento.":
+            "Clique em qualquer botão de teste e fale conosco pelo WhatsApp. Nossa equipe informa a disponibilidade e orienta você durante o atendimento.",
+        "Aceitamos Pix e cartão. Fale com o suporte para receber as instruções de pagamento.":
+            "Aceitamos Pix e cartão. Fale com nossa equipe pelo WhatsApp para receber as instruções de pagamento.",
+        "É compatível com quais dispositivos?":
+            "Em quais dispositivos posso usar?",
+        "É compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Consulte nossa equipe para confirmar o seu dispositivo.":
+            "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Fale conosco para confirmar a compatibilidade do seu aparelho.",
+    }
+    for old, new in faq_replacements.items():
+        html = html.replace(old, new)
+
+    html = html.replace("</head>", """<style>
+@media (max-width: 900px) {
+  .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 560px) {
+  .feature-grid { grid-template-columns: 1fr !important; }
+}
+</style></head>""")
     return html
 
 
 @app.route("/api/catalog")
 def catalog():
-    return jsonify(get_catalog())
+    return jsonify({
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "movies": [],
+        "series": [],
+        "attribution": {},
+    })
 
 
 @app.route("/health")
