@@ -8,18 +8,13 @@ app = Flask(__name__)
 
 BR_WHATSAPP = "5513988817584"
 BR_PLANS = [
-    ("15 dias", "R$ 10,00", "R$ 15,00"),
-    ("Mensal", "R$ 24,99", "R$ 29,99"),
-    ("Trimestral", "R$ 39,99", "R$ 54,99"),
-    ("Semestral", "R$ 59,99", "R$ 79,99"),
-    ("Anual", "R$ 129,99", "R$ 159,99"),
+    ("Mensal", "R$ 25,00", "R$ 30,00"),
+    ("Trimestral", "R$ 60,00", "R$ 65,00"),
+    ("Semestral", "R$ 100,00", "R$ 105,00"),
+    ("Anual", "R$ 160,00", "R$ 165,00"),
 ]
-BR_MULTI = {
-    "Mensal": ("R$ 30,00", "R$ 30,00"),
-    "Trimestral": ("R$ 49,99", "R$ 64,99"),
-    "Semestral": ("R$ 69,99", "R$ 89,99"),
-    "Anual": ("R$ 139,99", "R$ 169,99"),
-}
+# A versão Brasil exibe somente os quatro planos acima, sem opções Multi-Servidor.
+BR_MULTI = {}
 
 @app.route("/")
 def home():
