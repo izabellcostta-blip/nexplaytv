@@ -14,7 +14,7 @@ BR_PLANS = [
     ("Semestral", "R$ 105,00", "R$ 110,00"),
     ("Anual", "R$ 165,00", "R$ 170,00"),
 ]
-# As opções Multi-Servidor foram removidas conforme os valores atuais.
+# Sem opções Multi-Servidor: estrutura vazia para o template não exibir esses planos.
 BR_MULTI = {}
 
 @app.route("/")
@@ -144,3 +144,116 @@ def home():
         .nexplay-br-wa-float {
           right: 16px !important;
           bottom: 16px !important;
+          width: 56px !important;
+          height: 56px !important;
+        }
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Remove apenas antigos botões flutuantes do WhatsApp que possam
+        // ter vindo do layout USA. Os botões normais dos planos permanecem.
+        document.querySelectorAll('a[href*="wa.me"]').forEach(function (el) {
+          var s = window.getComputedStyle(el);
+          if (s.position === "fixed" || el.classList.contains("whatsapp-float") ||
+              el.classList.contains("wa-float") || el.classList.contains("floating-whatsapp")) {
+            el.remove();
+          }
+        });
+
+        var old = document.getElementById("nexplay-br-wa-float");
+        if (old) old.remove();
+
+        var a = document.createElement("a");
+        a.id = "nexplay-br-wa-float";
+        a.className = "nexplay-br-wa-float";
+        a.href = "https://wa.me/5513988817584";
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.setAttribute("aria-label", "Atendimento pelo WhatsApp");
+        a.title = "Atendimento pelo WhatsApp";
+
+        // Ícone no padrão oficial do WhatsApp, em branco sobre o verde da marca.
+        a.innerHTML = '<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">' +
+          '<path fill="#fff" d="M19.11 17.41c-.27-.14-1.58-.78-1.83-.87-.25-.09-.43-.14-.61.14-.18.27-.7.87-.86 1.05-.16.18-.32.2-.59.07-.27-.14-1.13-.42-2.15-1.34-.79-.7-1.33-1.56-1.49-1.83-.16-.27-.02-.42.12-.56.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.02-.22-.53-.45-.46-.61-.47-.16-.01-.34-.01-.52-.01-.18 0-.48.07-.73.34-.25.27-.95.93-.95 2.27s.98 2.64 1.11 2.82c.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.58.65.21 1.24.18 1.71.11.52-.08 1.58-.65 1.81-1.27.22-.62.22-1.15.16-1.27-.07-.11-.25-.18-.52-.32z"/>' +
+          '<path fill="#fff" fill-rule="evenodd" d="M16.03 4.2c-6.52 0-11.82 5.3-11.82 11.82 0 2.08.55 4.11 1.58 5.89L4.2 27.8l6.07-1.59a11.77 11.77 0 0 0 5.76 1.5h.01c6.52 0 11.82-5.3 11.82-11.82S22.56 4.2 16.03 4.2zm0 21.57h-.01a9.75 9.75 0 0 1-4.97-1.37l-.36-.21-3.6.94.96-3.51-.23-.36a9.76 9.76 0 1 1 8.21 4.51z"/>' +
+        '</svg>';
+
+        document.body.appendChild(a);
+      });
+    </script>
+    """
+
+    # Evita que referências residuais ao USA apareçam no botão/área de contato.
+    for old, new in {
+        "NexPlay TV Brasil": "NexPlay TV Brasil",
+        "NEXPLAY TV BRASIL": "NEXPLAY TV BRASIL",
+        "NexPlay TV Brasil": "NexPlay TV Brasil",
+        "NEXPLAY TV BRASIL": "NEXPLAY TV BRASIL",
+        "Atendimento nos EUA": "Atendimento no Brasil",
+        "nos EUA": "no Brasil",
+    }.items():
+        html = html.replace(old, new)
+
+    html = html.replace("</body>", floating_script + "\n</body>")
+
+
+    # FAQ exclusivo da versão Brasil.
+    # Não há pergunta sobre idioma/atendimento no Brasil.
+    faq_replacements = {
+        "É compatível com quais dispositivos?":
+            "Quais são os dispositivos compatíveis?",
+        "Em quais dispositivos posso usar?":
+            "Quais são os dispositivos compatíveis?",
+        "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Fale conosco para confirmar a compatibilidade do seu aparelho.":
+            "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis.",
+        "É compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis. Consulte nossa equipe para confirmar o seu dispositivo.":
+            "A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis.",
+        "O atendimento é em português?":
+            "Quantos conteúdos vocês têm?",
+        "Sim. Nosso suporte é realizado em português pelo WhatsApp.":
+            "Temos mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis.",
+        "O atendimento é realizado em português?":
+            "Quantos conteúdos vocês têm?",
+        "Nosso suporte é realizado em português pelo WhatsApp.":
+            "Temos mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis.",
+        "Quais formas de pagamento são aceitas?":
+            "Preciso de cartão de crédito para ativar?",
+        "Aceitamos Pix e cartão. Fale com nossa equipe pelo WhatsApp para receber as instruções de pagamento.":
+            "Não. Você não precisa de cartão de crédito para ativar. As opções de pagamento disponíveis são informadas no momento da contratação.",
+    }
+
+    for old, new in faq_replacements.items():
+        html = html.replace(old, new)
+
+    # Se o template original ainda tiver a pergunta de português com atributos
+    # data-pt/data-en, substitui a linha inteira por uma pergunta BR.
+    html = re.sub(
+        r'<summary[^>]*>O atendimento é em português\?</summary>\s*<p[^>]*>.*?</p>',
+        '<summary data-pt="Quantos conteúdos vocês têm?" data-en="How many contents are available?">Quantos conteúdos vocês têm?</summary><p data-pt="Temos mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis." data-en="We have more than 20,000 contents, including live channels, 4K and HD content, series, movies and children’s content.">Temos mais de 20 mil conteúdos, incluindo canais ao vivo, conteúdos em 4K e HD, séries, filmes e conteúdos infantis.</p>',
+        html,
+        flags=re.S,
+    )
+
+    # Substitui também variações da pergunta antiga, se existirem.
+    html = re.sub(
+        r'<summary[^>]*>É compatível com quais dispositivos\?</summary>\s*<p[^>]*>.*?</p>',
+        '<summary data-pt="Quais são os dispositivos compatíveis?" data-en="Which devices are compatible?">Quais são os dispositivos compatíveis?</summary><p data-pt="A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis." data-en="NexPlay is compatible with various devices, such as Smart TVs, smartphones, tablets, computers and other compatible devices.">A NexPlay é compatível com diversos dispositivos, como Smart TVs, celulares, tablets, computadores e outros aparelhos compatíveis.</p>',
+        html,
+        flags=re.S,
+    )
+
+    html = re.sub(
+        r'<summary[^>]*>Quais formas de pagamento são aceitas\?</summary>\s*<p[^>]*>.*?</p>',
+        '<summary data-pt="Preciso de cartão de crédito para ativar?" data-en="Do I need a credit card to activate?">Preciso de cartão de crédito para ativar?</summary><p data-pt="Não. Você não precisa de cartão de crédito para ativar. As opções de pagamento disponíveis são informadas no momento da contratação." data-en="No. You do not need a credit card to activate. Available payment options are provided at the time of purchase.">Não. Você não precisa de cartão de crédito para ativar. As opções de pagamento disponíveis são informadas no momento da contratação.</p>',
+        html,
+        flags=re.S,
+    )
+
+
+
+    # FAQ BR — conteúdo, dispositivos e teste grátis.
+    faq_questions = [
+        (
+            "Quais conteúdos estão disponíveis?",
+            "Você encontra canais ao vivo, filmes, séries, conteúdos em 4K e HD, opções infantis e muito mais, com uma programação pensada para diferentes momentos e perfis."
